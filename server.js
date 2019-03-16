@@ -12,6 +12,7 @@ const cookieParser= require('cookie-parser')
 const app         = express();
 const http        = require('http').Server(app);
 const sessionStore= new session.MemoryStore();
+const io          =require('socket.io')(http);
 
 
 fccTesting(app); //For FCC testing purposes
@@ -31,8 +32,9 @@ app.use(session({
 }));
 
 
-mongo.connect(process.env.DATABASE, (err, db) => {
+mongo.connect(process.env.DATABASE, (err, client) => {
     if(err) console.log('Database error: ' + err);
+    const db = client.db('chatroom');
   
     auth(app, db);
     routes(app, db);
@@ -40,7 +42,10 @@ mongo.connect(process.env.DATABASE, (err, db) => {
     http.listen(process.env.PORT || 3000);
 
   
-    //start socket.io code  
+    //start socket.io code
+    io.on('connection', socket => {
+      console.log("A user has connected");
+    });
 
   
 
