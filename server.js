@@ -32,7 +32,7 @@ app.use(session({
 }));
 
 
-mongo.connect(process.env.DATABASE, (err, client) => {
+mongo.connect(process.env.DATABASE, { useNewUrlParser: true }, (err, client) => {
     if(err) console.log('Database error: ' + err);
     const db = client.db('chatroom');
   
